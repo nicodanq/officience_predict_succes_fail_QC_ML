@@ -23,13 +23,11 @@ We start without real logs, using **synthetic data** to build and test the full 
 ### Mathematical model
 We generate a latent score:
 
-\[
-z = w_1 \text{SNR} + w_2 \text{RSSI} + ... + b
-\]
+z = w1SNR + w2RSSI + ... + b
+
 and convert it to probability with a **sigmoid**:
-\[
-P(\text{success}) = \frac{1}{1 + e^{-z}}
-\]
+
+P(success) = 1 / (1 + exp(-z))
 
 Then we sample a binary variable (`success`).
 
@@ -61,9 +59,9 @@ Scikit-learn structures ML as a **pipeline**:
 
 ### The Logit
 The **logit** is the linear score before the sigmoid:
-\[
-\text{logit}(p) = \log\left(\frac{p}{1-p}\right)
-\]
+
+logit(p) = log(p / (1 - p))
+
 It maps probabilities (0–1) to all real numbers.
 
 ### The Sigmoid
