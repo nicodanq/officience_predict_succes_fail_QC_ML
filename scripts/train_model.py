@@ -15,10 +15,10 @@ from sklearn.pipeline import Pipeline
 load_dotenv()
 
 PROCESSED_DIR = Path(os.getenv("PROCESSED_DIR"))
-MODEL_DIR = Path(os.getenv("MODELS_DIR"))
+MODELS_DIR = Path(os.getenv("MODELS_DIR"))
 SEED = int(os.getenv("SEED"))
 
-Path(MODEL_DIR).mkdir(parents=True, exist_ok=True)
+Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
 
 x_train = pd.read_csv(PROCESSED_DIR / "x_train.csv")
 x_test = pd.read_csv(PROCESSED_DIR / "x_test.csv")
