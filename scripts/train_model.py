@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 
+import joblib
 # StandardScaler() → normalise les variables numériques (centrées sur 0, écart-type 1)
 # OneHotEncoder() → transforme les variables catégorielles en colonnes binaires (0/1)
 # ColumnTransformer() → permet d’appliquer les deux en même temps, sur les bons types de colonnes.
@@ -71,3 +72,10 @@ for feature, coef in zip(feature_names, model.coef_[0]):
     equation += f"({coef:.3f})*{feature}+"
 equation += f"({b:.3f})"
 print("TRAIN : ",equation)
+
+model_path = MODELS_DIR / "qc_baseline_model.joblib"
+joblib.dump(clf, model_path)
+
+print("Saving model to:", model_path)
+print("MODELS_DIR exists?", MODELS_DIR.exists())
+print(f"TRAIN : 💾 Model saved at {model_path}")
