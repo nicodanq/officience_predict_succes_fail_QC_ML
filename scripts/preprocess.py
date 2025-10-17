@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from features_utils import add_time_features
 
 load_dotenv()
 
@@ -21,6 +22,7 @@ Path(PROCESSED_DIR).mkdir(parents=True, exist_ok=True)
 # print(f"PREPROCESS : missing values: {df.isna().sum()}")
 
 # print(f"PREPROCESS : success counts: {df['success'].value_counts(normalize=True)}")
+df = add_time_features(df)
 
 x=df.drop(columns=["success"])
 y=df["success"]
