@@ -1,114 +1,143 @@
-# 🛰️ AI-Driven Quality Intelligence – Project Overview
+# 🚀 QC Marlink Project — Frontend + Backend (Dockerized)
 
-## 1. Context & Objectives
-This project explores how AI can help identify and explain communication success or failure
-between mobile devices and a satellite relay.  
-We start without real logs, using **synthetic data** to build and test the full pipeline.
-
----
-
-## 2. Data Simulation (Synthetic Data)
-**File:** `scripts/generate_data.py`
-
-### What it does
-- Simulates physical and environmental parameters (SNR, RSSI, temperature…)
-- Creates a probability of success using a *logit* + *sigmoid* model
-- Adds noise to mimic real-world variability
-
-### Why we use synthetic data
-- Allows development before real logs exist  
-- Lets us test preprocessing, model training, and visualization pipelines  
-- Makes it easy to adjust distributions and relationships
-
-### Mathematical model
-We generate a latent score:
-
-z = w1SNR + w2RSSI + ... + b
-
-and convert it to probability with a **sigmoid**:
-
-P(success) = 1 / (1 + exp(-z))
-
-Then we sample a binary variable (`success`).
+This project includes:
+- **Frontend** → Next.js web application (user interface)
+- **Backend** → FastAPI service (prediction model)
+- Fully orchestrated using **Docker Compose**
 
 ---
 
-## 3. Dataset Description (Synthetic Features)
+## 🧱 Project Structure
 
-| Variable | Type | Description | Unit / Example |
-|-----------|------|--------------|----------------|
-| **snr** | Numeric | **Signal-to-Noise Ratio** – measures signal quality at the satellite receiver. Higher = clearer signal. | dB (e.g., 12.5) |
-| **rssi** | Numeric | **Received Signal Strength Indicator** – measures Bluetooth signal power between phone and device. Closer to 0 = stronger. | dBm (e.g., -70) |
-| **distance** | Numeric | Distance between the phone and its Bluetooth-connected device. | meters (e.g., 2.8) |
-| **latency_bt** | Numeric | Latency of Bluetooth transmission. | milliseconds (e.g., 45 ms) |
-| **latency_sat** | Numeric | Latency of satellite transmission. | milliseconds (e.g., 400 ms) |
-| **temperature** | Numeric | Local ambient temperature during transmission. | °C (e.g., 27.3) |
-| **humidity** | Numeric | Relative humidity (can influence RF propagation). | % (e.g., 65%) |
-| **battery** | Numeric | Device battery level at the time of transmission. | % (e.g., 58%) |
-| **firmware** | Categorical | Version of device firmware (v1.0, v1.1, v2.0). Higher versions simulate improved stability. | categorical |
-| **time_of_day** | Categorical | Moment of the day (“morning”, “afternoon”, “evening”, “night”) to check contextual patterns. | categorical |
-| **latitude**, **longitude**, **altitude** | Numeric | Simulated geolocation to detect spatial effects on connection quality. | degrees / meters |
-| **success** | Target (0/1) | Binary result of communication attempt (1 = success, 0 = failure). | binary |
+ai_qc_project/
+│
+├── qc_marlink_frontend/ # Frontend (Next.js + shadcn/ui)
+│ ├── Dockerfile
+│ ├── package.json
+│ ├── .env.sample
+│ └── ...
+│
+├── api/ # Backend (FastAPI + ML)
+│ ├── Dockerfile
+│ ├── main.py
+│ ├── requirements.txt
+│ └── core/
+│
+├── compose.yaml # Docker Compose configuration
+└── README.md
 
-### Notes
-- `SNR` and `RSSI` are the **core indicators of communication quality**:
-  - High `SNR` → less noise in the satellite link.
-  - High (less negative) `RSSI` → stronger Bluetooth connection.
-- Environmental variables like `humidity` or `temperature` can degrade performance.
-- `distance`, `latency_sat`, and `latency_bt` increase the risk of failure.
-- `firmware` represents software improvements (e.g., better retry logic).
+yaml
+Copier le code
 
 ---
 
+## ⚙️ Prerequisites
 
-## 4. Machine Learning Foundations
+Before running this project, make sure you have installed:
 
-### Scikit-learn pipeline
-Scikit-learn structures ML as a **pipeline**:
-1. **Preprocessing**: scaling numeric features, encoding categorical ones  
-2. **Model training**: fitting a model on training data  
-3. **Prediction**: producing probabilities or classes for new data  
-
-### Why logistic regression first
-- It’s interpretable (each coefficient has meaning)  
-- It matches the synthetic generation process (same sigmoid idea)  
-- Serves as a baseline before complex models
-
-### Alternative models
-| Model | Type | Strength | Limitation |
-|--------|------|-----------|-------------|
-| Logistic Regression | Linear | Explainable, fast | Misses non-linear effects |
-| RandomForest | Ensemble | Captures interactions | Less interpretable |
-| XGBoost | Gradient boosting | High accuracy | More complex tuning |
+- 🐳 [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- 🧩 (Optional) [pnpm](https://pnpm.io/) or [npm](https://www.npmjs.com/) if you want to run the frontend locally without Docker
 
 ---
 
-## 5. Mathematical Background
+## 🔐 Environment Variables
 
-### The Logit
-The **logit** is the linear score before the sigmoid:
+### 🧩 `.env` file
 
-logit(p) = log(p / (1 - p))
+Create a `.env` file at the project root (or copy from the provided sample):
 
-It maps probabilities (0–1) to all real numbers.
+```bash
+cp .env.sample .env
+Inside it, set at least:
 
-### The Sigmoid
-Smoothly converts the logit into a probability curve.  
-Small changes around 0 strongly affect the probability.
+env
+Copier le code
+NEXT_PUBLIC_API_URL=http://backend:8000
+⚠️ Important Notes:
 
-### Why scaling matters
-Many models assume features have comparable ranges.
-`StandardScaler()` centers and normalizes numeric variables.
+http://backend:8000 → used inside Docker (via the internal network)
+
+If you run the frontend locally (without Docker), change it to:
+
+ini
+Copier le code
+NEXT_PUBLIC_API_URL=http://localhost:8000
+🚀 Run with Docker
+Step 1 — Build the images
+bash
+Copier le code
+docker compose build
+This command builds both:
+
+The Next.js frontend image
+
+The FastAPI backend image
+
+Step 2 — Start the containers
+bash
+Copier le code
+docker compose up
+Both containers (frontend and backend) will start together and communicate internally.
+
+🌍 Access the Services
+Service	URL	Description
+Frontend	http://localhost:3000	Next.js web application
+Backend API	http://localhost:8000	FastAPI backend
+API Docs (Swagger)	http://localhost:8000/docs	Interactive API documentation
+API Docs (ReDoc)	http://localhost:8000/redoc	Static API documentation
+
+🧰 Useful Commands
+Stop all containers
+bash
+Copier le code
+docker compose down
+Rebuild everything from scratch
+bash
+Copier le code
+docker compose build --no-cache
+View logs
+bash
+Copier le code
+docker compose logs backend
+docker compose logs frontend
+Enter a container shell
+bash
+Copier le code
+docker exec -it qc_backend /bin/sh
+🧠 Run Locally (without Docker)
+You can also run both services independently for development.
+
+▶️ Backend (FastAPI)
+bash
+Copier le code
+cd api
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+▶️ Frontend (Next.js)
+bash
+Copier le code
+cd qc_marlink_frontend
+pnpm install
+pnpm dev
+Then open http://localhost:3000 in your browser.
+
+✅ Troubleshooting
+Issue	Likely Cause	Solution
+❌ Backend container stops	Missing Python package (shap, pandas, etc.)	Check and update requirements.txt
+❌ Frontend can't reach API	Incorrect .env value	Use NEXT_PUBLIC_API_URL=http://backend:8000
+⚙️ permission denied error	Docker Desktop not running	Start Docker before running docker compose up
+🐍 ImportError in backend	Wrong import path or module name	Check CMD ["uvicorn", "main:app", ...] in backend Dockerfile
+
+🧾 License
+Internal project — Officience
+© 2025 QC Marlink Project
+
+👨‍💻 Author
+Nicolas Danquigny — Fullstack Developer Intern @ Officience
+
+yaml
+Copier le code
 
 ---
 
-## 6. Pipeline Overview
-
-```text
-Data (synthetic or real)
-   ↓
-Preprocessing  →  Model training (Logistic / RF)
-   ↓
-Evaluation  →  Feature importance / SHAP
-   ↓
-Model saved (.joblib)  →  Dashboard / API
+Would you like me to include a **section with GitHub badges and quick-start command highlights** (for a more polished public-facing README)?
