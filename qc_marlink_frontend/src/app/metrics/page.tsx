@@ -31,7 +31,7 @@ export default function MetricsPage() {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch("http://127.0.0.1:8000/metrics")
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/metrics`)
       if (!response.ok) {
         throw new Error("Failed to fetch metrics")
       }
@@ -46,7 +46,7 @@ export default function MetricsPage() {
       })
     } catch (error) {
       console.log("[v0] Metrics fetch error:", error)
-      setError("Unable to load metrics. Please ensure the backend is running at http://127.0.0.1:8000")
+      setError(`Unable to load metrics. Please ensure the backend is running at ${process.env.NEXT_PUBLIC_API_URL}`)
       toast({
         variant: "error",
         title: "Fetch Error",
