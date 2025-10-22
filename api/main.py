@@ -36,12 +36,27 @@ def get_metrics():
 
 @app.get("/graphs")
 def get_graphs():
+    """
+    Retourne toutes les visualisations du modèle :
+    - matrice de confusion
+    - courbe ROC
+    - distribution des probabilités
+    - importance des features
+    - calibration curve
+    """
+    logger.info("📈 Generating all graphs for visualization dashboard...")
     metrics = generate_metrics_and_graphs()
+
     return {
-        "confusion_matrix": metrics["confusion_matrix"],
-        "roc_curve": metrics["roc_curve"]
+        "confusion_matrix": metrics.get("confusion_matrix"),
+        "roc_curve": metrics.get("roc_curve"),
+        "proba_distribution": metrics.get("proba_distribution"),
+        "feature_importance": metrics.get("feature_importance"),
+        "calibration_curve": metrics.get("calibration_curve"),
     }
+
 
 @app.get("/health")
 def health_check():
     return {"status": "ok", "model_loaded": True}
+
