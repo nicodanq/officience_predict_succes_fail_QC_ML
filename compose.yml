@@ -1,0 +1,49 @@
+services:
+  frontend:
+    build:
+      context: ./qc_marlink_frontend
+      dockerfile: Dockerfile
+    container_name: qc_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    # si tu veux auto-refresh en dev, tu peux monter ton code :
+    # volumes:
+    #   - ./qc_marlink_frontend:/app
+
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: qc_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - PORT=8000
+      # ajoute ici tes variables d’environnement backend si besoin
+      # - DATABASE_URL=postgres://user:pass@db:5432/yourdb
+    volumes:
+      - ./api:/app
+    # depends_on n’est utile que si tu ajoutes une base de données, ex:
+    # depends_on:
+    #   - db
+
+  # (optionnel) service base de données, exemple PostgreSQL
+  # db:
+  #   image: postgres:16
+  #   container_name: qc_db
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     POSTGRES_USER: user
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_DB: qc_db
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:

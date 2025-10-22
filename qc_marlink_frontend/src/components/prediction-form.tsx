@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"
 import PredictionResult from "@/components/prediction-result"
 import { Loader2 } from "lucide-react"
 
@@ -108,7 +108,7 @@ export default function PredictionForm() {
     } catch (error) {
       console.error("[v0] Prediction error:", error)
       toast({
-        variant: "destructive",
+        variant: "error",
         title: "Prediction Error",
         description: "Unable to connect to the prediction API. Please ensure the backend is running.",
       })
