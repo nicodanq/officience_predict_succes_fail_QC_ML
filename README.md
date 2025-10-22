@@ -67,9 +67,13 @@ docker compose build
 
 ```bash
 # Step 2 — Start services
-docker compose up
+docker compose up -d
 ```
 
+```bash
+# Start services (2 in 1)
+docker compose up -d --build
+```
 ---
 
 ## 🌍 Access the Services
