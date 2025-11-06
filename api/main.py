@@ -6,6 +6,24 @@ from core.schemas import PredictRequest
 from core.logger import logger
 
 app = FastAPI(title="AI QC Predictor API")
+# --- Configuration CORS ---
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    # Ajoute ici ton front déployé si besoin :
+    # "https://monfront.com",
+
+    "https://ai-qc.officience.com",
+    "http://172.16.1.7:3000",  # si tu veux tester en local aussi
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,       # ou ["*"] pour tout autoriser (dev)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.add_middleware(
     CORSMiddleware,
