@@ -11,6 +11,7 @@ origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://ai-qc.officience.com",
+    "https://ai-qc.officience.com/metrics",
     "http://172.16.1.7:3000",  # si tu veux tester en local aussi
 ]
 
